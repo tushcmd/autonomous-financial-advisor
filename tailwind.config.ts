@@ -7,7 +7,6 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./src/app/globals.css",
   ],
   prefix: "",
   theme: {
@@ -62,21 +61,11 @@ const config = {
       },
       // Define color themes with CSS variables
       colors: {
-        background: {
-          DEFAULT: "oklch(var(--background))",
-        },
-        foreground: {
-          DEFAULT: "oklch(var(--foreground))",
-        },
-        border: {
-          DEFAULT: "oklch(var(--border))",
-        },
-        input: {
-          DEFAULT: "oklch(var(--input))",
-        },
-        ring: {
-          DEFAULT: "oklch(var(--ring))",
-        },
+        border: "oklch(var(--border))",
+        input: "oklch(var(--input))",
+        ring: "oklch(var(--ring))",
+        background: "oklch(var(--background))",
+        foreground: "oklch(var(--foreground))",
         primary: {
           DEFAULT: "oklch(var(--primary))",
           foreground: "oklch(var(--primary-foreground))",

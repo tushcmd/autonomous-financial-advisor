@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import ModalProvider from "@/components/modals/modal-providers";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,12 +22,18 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased`}
       >
-        <SessionProvider>
-          <ModalProvider>
-            {children}
-          </ModalProvider>
-        </SessionProvider>
-
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider>
+            <ModalProvider>
+              {children}
+            </ModalProvider>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
