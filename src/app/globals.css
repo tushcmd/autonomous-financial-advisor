@@ -1,13 +1,10 @@
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
-  --radius: 0.75rem;
+  --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
@@ -75,14 +72,16 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 @layer base {
   * {
     border-color: oklch(var(--border));
     outline-color: oklch(var(--ring) / 0.5);
-  }
-  body {
-    background-color: oklch(var(--background));
-    color: oklch(var(--foreground));
   }
 }
 
