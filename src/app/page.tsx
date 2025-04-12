@@ -29,7 +29,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      {/* Fixed header with shadow */}
+      <div className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+        <Header />
+      </div>
+
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 flex items-center">
           <DollarSign className="mr-2" />
