@@ -99,7 +99,7 @@ async function getDailyStockPrice(symbol: string): Promise<number> {
     }
 
     throw new Error("Invalid API response format");
-  } catch (error) {
+  } catch {
     console.warn(
       `Could not fetch price for ${symbol}, using fallback price: $${FALLBACK_PRICES[symbol] || 100}`,
     );
@@ -186,6 +186,7 @@ export async function seedPortfolios(
     await Promise.all(tradePromises);
 
     // Create an empty real portfolio with default cash balance
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const realPortfolio = await prisma.portfolio.create({
       data: {
         userId,

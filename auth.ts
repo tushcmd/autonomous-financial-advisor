@@ -5,9 +5,8 @@ import NextAuth, { type DefaultSession } from "next-auth";
 
 import { prisma } from "@/lib/db";
 import { getUserById } from "@/lib/user";
-// import { seedPortfolios } from "@/lib/seedPortfolios";
+import { seedPortfolios } from "@/lib/seedPortfolios"; // Uncommented
 
-// More info: https://authjs.dev/getting-started/typescript#module-augmentation
 declare module "next-auth" {
   interface Session {
     user: {
@@ -25,15 +24,26 @@ export const {
   pages: {
     signIn: "/",
   },
-  // pages: {
-  //   signIn: "/login",
-  //   // error: "/auth/error",
-  // },
   callbacks: {
     async session({ token, session }) {
       if (session.user) {
         if (token.sub) {
           session.user.id = token.sub;
+
+          // 🔄 Seed portfolios if none exist
+          try {
+            const hasPortfolio = await prisma.portfolio.findFirst({
+              where: { userId: token.sub },
+              select: { id: true },
+            });
+
+            if (!hasPortfolio) {
+              await seedPortfolios(token.sub);
+              console.log(`Portfolios seeded for user ${token.sub}`);
+            }
+          } catch (error) {
+            console.error("Failed to seed portfolios:", error);
+          }
         }
 
         if (token.email) {
@@ -65,15 +75,6 @@ export const {
 
       return token;
     },
-
-    // Seed on sign in
-    // async signIn({ user }) {
-    //   if (user.id) {
-    //     await seedPortfolios(user.id);
-    //   }
-    //   return true;
-    // },
   },
   ...authConfig,
-  // debug: process.env.NODE_ENV !== "production"
 });
