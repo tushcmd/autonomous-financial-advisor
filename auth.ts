@@ -5,6 +5,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 
 import { prisma } from "@/lib/db";
 import { getUserById } from "@/lib/user";
+import { seedPortfolios } from "@/lib/seedPortfolios";
 
 // More info: https://authjs.dev/getting-started/typescript#module-augmentation
 declare module "next-auth" {
@@ -63,6 +64,14 @@ export const {
       token.role = dbUser.role;
 
       return token;
+    },
+
+    // Seed on sign in
+    async signIn({ user }) {
+      if (user.id) {
+        await seedPortfolios(user.id);
+      }
+      return true;
     },
   },
   ...authConfig,
