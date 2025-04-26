@@ -8,13 +8,12 @@ import {
     useMemo,
     useState,
 } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 
 import { Loader } from "lucide-react";
-
-
 
 function SignInModal({
     showSignInModal,
@@ -24,7 +23,7 @@ function SignInModal({
     setShowSignInModal: Dispatch<SetStateAction<boolean>>;
 }) {
     const [signInClicked, setSignInClicked] = useState(false);
-
+    const router = useRouter(); // Initialize router
 
     const handleSignIn = async () => {
         setSignInClicked(true);
@@ -34,7 +33,8 @@ function SignInModal({
                 console.error("Sign in error:", result.error);
                 setSignInClicked(false);
             } else {
-                // Successful sign-in will trigger the useEffect above
+                // Redirect to onboarding after successful sign-in
+                router.push("/onboarding");
                 setTimeout(() => setShowSignInModal(false), 400);
             }
         } catch (error) {
@@ -94,7 +94,6 @@ export function useSignInModal() {
         [setShowSignInModal, SignInModalCallback],
     );
 }
-
 
 function Google(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     // Merge classes but ensure size classes are applied

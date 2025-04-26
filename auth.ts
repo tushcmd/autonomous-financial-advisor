@@ -1,19 +1,11 @@
 import authConfig from "./auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { UserRole } from "@prisma/client";
-import NextAuth, { type DefaultSession } from "next-auth";
+// import { UserRole } from "@prisma/client";
+import NextAuth from "next-auth";
 
 import { prisma } from "@/lib/db";
 import { getUserById } from "@/lib/user";
-import { seedPortfolios } from "@/lib/seedPortfolios"; // Uncommented
-
-declare module "next-auth" {
-  interface Session {
-    user: {
-      role: UserRole;
-    } & DefaultSession["user"];
-  }
-}
+import { seedPortfolios } from "@/lib/seedPortfolios";
 
 export const {
   handlers: { GET, POST },
@@ -30,29 +22,31 @@ export const {
         if (token.sub) {
           session.user.id = token.sub;
 
-          // 🔄 Seed portfolios if none exist
           try {
-            const hasPortfolio = await prisma.portfolio.findFirst({
+            const portfolio = await prisma.portfolio.findFirst({
               where: { userId: token.sub },
-              select: { id: true },
+              select: { id: true, hasCompletedOnboarding: true },
             });
 
-            if (!hasPortfolio) {
+            if (!portfolio) {
               await seedPortfolios(token.sub);
-              console.log(`Portfolios seeded for user ${token.sub}`);
+              session.user.hasCompletedOnboarding = false;
+            } else {
+              session.user.hasCompletedOnboarding =
+                !!portfolio.hasCompletedOnboarding;
             }
           } catch (error) {
-            console.error("Failed to seed portfolios:", error);
+            console.error(
+              "Failed to seed portfolios or check onboarding status:",
+              error,
+            );
+            session.user.hasCompletedOnboarding = false;
           }
         }
 
-        if (token.email) {
-          session.user.email = token.email;
-        }
-
-        if (token.role) {
-          session.user.role = token.role as UserRole;
-        }
+        // Ensure the `hasCompletedOnboarding` property is correctly passed
+        session.user.hasCompletedOnboarding =
+          token.hasCompletedOnboarding === true;
 
         session.user.name = token.name;
         session.user.image = token.picture;
@@ -68,10 +62,16 @@ export const {
 
       if (!dbUser) return token;
 
+      const portfolio = await prisma.portfolio.findFirst({
+        where: { userId: token.sub },
+        select: { hasCompletedOnboarding: true },
+      });
+
       token.name = dbUser.name;
       token.email = dbUser.email;
       token.picture = dbUser.image;
       token.role = dbUser.role;
+      token.hasCompletedOnboarding = portfolio?.hasCompletedOnboarding || false;
 
       return token;
     },
