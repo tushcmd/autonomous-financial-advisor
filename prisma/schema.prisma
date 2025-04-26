@@ -55,6 +55,7 @@ model User {
     createdAt     DateTime  @default(now()) @map(name: "created_at")
     updatedAt     DateTime  @default(now()) @map(name: "updated_at")
     role          UserRole  @default(USER)
+    hasCompletedOnboarding Boolean @default(false)
 
     accounts Account[]
     sessions Session[]
@@ -80,6 +81,7 @@ model VerificationToken {
     @@map(name: "verification_tokens")
 }
 
+// Update your Portfolio model in schema.prisma
 model Portfolio {
   id             String        @id @default(cuid())
   userId         String
@@ -88,14 +90,26 @@ model Portfolio {
   type           PortfolioType @default(DEMO)
   broker         String?       // e.g. "Alpaca", "Binance"
   accountId      String?       // user's account ID with that broker
-  longTermGoal   String?
+  longTermGoal   String?       // Already exists in your schema
+  portfolioGoal  PortfolioGoal? // New field to store the selected goal
   aiSummary      String?
   autoTrading    Boolean       @default(false)
-  cashBalance    Float         @default(0)  // 👈 New cash balance field with default 0
-  fakeTrades     FakeTrade[]   // demo trades
-  realHoldings   RealHolding[] // real API-synced holdings
+  cashBalance    Float         @default(0)
+  fakeTrades     FakeTrade[]
+  realHoldings   RealHolding[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt()
+  hasCompletedOnboarding Boolean @default(false) // Track if user has completed onboarding
+}
+
+// New enum for predefined portfolio goals
+enum PortfolioGoal {
+  RETIREMENT
+  GROWTH
+  INCOME
+  PRESERVATION
+  SPECULATION
+  OTHER
 }
 
 enum PortfolioType {
