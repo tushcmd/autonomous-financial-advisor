@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/groq": "^1.2.1",
+    "@ai-sdk/groq": "^1.2.8",
     "@auth/prisma-adapter": "^2.8.0",
     "@hookform/resolvers": "^5.0.1",
     "@mastra/core": "^0.6.4",
