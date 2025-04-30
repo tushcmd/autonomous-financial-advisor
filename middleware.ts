@@ -26,22 +26,15 @@ export default auth(async (req) => {
 
   // If user is authenticated
   if (session) {
-    console.log("Middleware session data:", session);
     const hasCompletedOnboarding = session.user?.hasCompletedOnboarding;
 
-    // Ensure proper redirection to onboarding
-    if (
-      hasCompletedOnboarding === false &&
-      !isOnboardingRoute &&
-      !pathname.startsWith("/api/")
-    ) {
+    if (!hasCompletedOnboarding && !isOnboardingRoute) {
       return NextResponse.redirect(new URL("/onboarding", nextUrl));
     }
 
-    // User is authenticated and has completed onboarding
     if (
-      (pathname === "/login" || isOnboardingRoute) &&
-      hasCompletedOnboarding
+      hasCompletedOnboarding &&
+      (pathname === "/login" || isOnboardingRoute)
     ) {
       return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }

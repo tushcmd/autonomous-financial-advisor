@@ -9,14 +9,14 @@ export type ExtendedUser = User & {
 declare module "next-auth/jwt" {
   interface JWT {
     role: UserRole;
-    hasCompletedOnboarding: boolean; // Ensure this is non-optional
+    hasCompletedOnboarding: boolean;
   }
 }
 
 declare module "next-auth" {
   interface Session {
     user: ExtendedUser & {
-      hasCompletedOnboarding: boolean; // Ensure this is non-optional
+      hasCompletedOnboarding: boolean;
     };
   }
 }

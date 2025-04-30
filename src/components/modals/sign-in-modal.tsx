@@ -30,7 +30,12 @@ function SignInModal({
         try {
             const result = await signIn("google", { redirect: false });
             if (result?.error) {
-                console.error("Sign in error:", result.error);
+                if (result.error === "OAuthAccountNotLinked") {
+                    console.error("Sign in error: Account not linked");
+                    router.push("/auth/error?error=OAuthAccountNotLinked");
+                } else {
+                    console.error("Sign in error:", result.error);
+                }
                 setSignInClicked(false);
             } else {
                 // Redirect to onboarding after successful sign-in

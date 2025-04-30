@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     await prisma.user.update({
       where: { id: userId },
       data: {
-        hasCompletedOnboarding: true, // Mark onboarding as complete
+        hasCompletedOnboarding: true,
       },
     });
 

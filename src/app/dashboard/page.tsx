@@ -1,76 +1,107 @@
-'use client'
+import { auth } from "@/../auth";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { Header } from "@/components/layout/header";
 
-import React, { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+export default async function DashboardPage() {
+    const session = await auth();
 
-// Define a type for the demo portfolio
-interface DemoPortfolio {
-    cashBalance: number;
-    type: string;
-    fakeTrades: {
-        id: string;
-        symbol: string;
-        shares: number;
-        buyPrice: number;
-        currentPrice: number;
-        status: string;
-    }[];
-}
+    if (!session) {
+        redirect("/login");
+    }
 
-export default function Dashboard() {
-    const [demoPortfolio, setDemoPortfolio] = useState<DemoPortfolio | null>(null);
+    // If user hasn't completed onboarding, redirect to onboarding
+    if (!session.user.hasCompletedOnboarding) {
+        redirect("/onboarding");
+    }
 
-    useEffect(() => {
-        async function fetchDemoPortfolio() {
-            try {
-                const response = await fetch("/api/dashboard");
-                const data: DemoPortfolio[] = await response.json();
-                const demo = data.find((portfolio: DemoPortfolio) => portfolio.type === "DEMO");
-                setDemoPortfolio(demo || null);
-            } catch (error) {
-                console.error("Error fetching demo portfolio:", error);
-            }
-        }
-
-        fetchDemoPortfolio();
-    }, []);
+    // Fetch the user's demo portfolio first, fallback to any portfolio
+    const portfolio = await prisma.portfolio.findFirst({
+        where: {
+            userId: session.user.id,
+            type: "DEMO"
+        },
+    }) || await prisma.portfolio.findFirst({
+        where: { userId: session.user.id },
+    });
 
     return (
-        <div className="dashboard">
-            <h1 className="text-2xl font-bold mb-4">Demo Portfolio</h1>
-            {demoPortfolio ? (
-                <div>
-                    <Card className="p-4 mb-4">
-                        <h2 className="text-xl font-semibold">Cash Balance</h2>
-                        <p className="text-lg">${demoPortfolio.cashBalance.toFixed(2)}</p>
-                    </Card>
-                    <h2 className="text-xl font-semibold mb-2">Stocks</h2>
-                    <table className="table-auto w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr>
-                                <th className="border border-gray-300 px-4 py-2">Symbol</th>
-                                <th className="border border-gray-300 px-4 py-2">Shares</th>
-                                <th className="border border-gray-300 px-4 py-2">Buy Price</th>
-                                <th className="border border-gray-300 px-4 py-2">Current Price</th>
-                                <th className="border border-gray-300 px-4 py-2">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {demoPortfolio.fakeTrades.map((stock) => (
-                                <tr key={stock.id}>
-                                    <td className="border border-gray-300 px-4 py-2">{stock.symbol}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{stock.shares}</td>
-                                    <td className="border border-gray-300 px-4 py-2">${stock.buyPrice.toFixed(2)}</td>
-                                    <td className="border border-gray-300 px-4 py-2">${stock.currentPrice.toFixed(2)}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{stock.status}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+        <>
+            <Header />
+            <main className="container mx-auto py-10 px-4">
+                <div className="flex items-center justify-between mb-6">
+                    <h1 className="text-3xl font-bold">Your Investment Dashboard</h1>
                 </div>
-            ) : (
-                <p>Loading demo portfolio...</p>
-            )}
-        </div>
+
+                {portfolio ? (
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-semibold">Portfolio Overview</h2>
+                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
+                                    {portfolio.type === "DEMO" ? "Demo" : "Real"}
+                                </span>
+                            </div>
+                            <div className="space-y-3">
+                                <p>
+                                    <span className="font-medium">Name:</span> {portfolio.name}
+                                </p>
+                                <p>
+                                    <span className="font-medium">Type:</span>{" "}
+                                    {portfolio.type === "DEMO" ? "Demo Portfolio" : "Real Portfolio"}
+                                </p>
+                                <p>
+                                    <span className="font-medium">Goal:</span>{" "}
+                                    {portfolio.portfolioGoal === "RETIREMENT"
+                                        ? "Retirement Planning"
+                                        : portfolio.portfolioGoal === "GROWTH"
+                                            ? "Long-term Growth"
+                                            : portfolio.portfolioGoal === "INCOME"
+                                                ? "Generate Income"
+                                                : portfolio.portfolioGoal === "PRESERVATION"
+                                                    ? "Capital Preservation"
+                                                    : portfolio.portfolioGoal === "SPECULATION"
+                                                        ? "Speculation/High Risk"
+                                                        : portfolio.portfolioGoal === "OTHER"
+                                                            ? "Custom Goal"
+                                                            : "Not specified"}
+                                </p>
+                                {portfolio.longTermGoal && (
+                                    <p>
+                                        <span className="font-medium">Custom Goal:</span> {portfolio.longTermGoal}
+                                    </p>
+                                )}
+                                <p>
+                                    <span className="font-medium">Cash Balance:</span> ${portfolio.cashBalance.toFixed(2)}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                                <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+                                <div className="grid gap-3">
+                                    <button className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg font-medium transition-colors">
+                                        Add Funds
+                                    </button>
+                                    <button className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-lg font-medium transition-colors">
+                                        Make a Trade
+                                    </button>
+                                    <button className="inline-flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white py-2.5 px-4 rounded-lg font-medium transition-colors">
+                                        View Holdings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="bg-yellow-50 dark:bg-yellow-900 p-6 rounded-lg">
+                        <p className="text-yellow-800 dark:text-yellow-200">
+                            No portfolio found. Please try logging out and back in, or contact support.
+                        </p>
+                    </div>
+                )}
+            </main>
+        </>
     );
 }
