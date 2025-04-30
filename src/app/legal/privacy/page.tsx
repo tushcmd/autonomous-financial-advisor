@@ -15,7 +15,7 @@ export default function PrivacyPage() {
                 className="mb-6 gap-2"
             >
                 <ArrowLeft className="size-4" />
-                Back to Login
+                Back to Sign In
             </Button>
 
             <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>

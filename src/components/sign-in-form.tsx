@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader } from "lucide-react";
 
-export function LoginForm({
+export function SignInForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {

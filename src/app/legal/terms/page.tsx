@@ -13,7 +13,7 @@ export default function TermsPage() {
                 onClick={() => router.back()}
                 className="mb-6"
             >
-                ← Back to Login
+                ← Back to Sign In
             </Button>
 
             <h1 className="text-3xl font-bold mb-8">Terms of Service</h1>
