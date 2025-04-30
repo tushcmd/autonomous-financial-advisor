@@ -25,7 +25,7 @@ export const {
       const userId = token.sub;
       session.user.id = userId;
       session.user.role = token.role;
-      session.user.email = token.email;
+      session.user.email = token.email ?? "";
       session.user.name = token.name;
       session.user.image = token.picture;
 
