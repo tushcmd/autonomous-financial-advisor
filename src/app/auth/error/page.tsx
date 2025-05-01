@@ -17,10 +17,10 @@ export default function AuthErrorPage() {
             <h1 className="text-2xl font-bold">Authentication Error</h1>
             <p className="mt-4 text-center text-muted-foreground">{errorMessage}</p>
             <a
-                href="/login"
+                href="/sign-in"
                 className="mt-6 text-primary underline hover:text-primary-dark"
             >
-                Go back to Login
+                Go back to Sign In
             </a>
         </div>
     );
