@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import ModalProvider from "@/components/modals/modal-providers";
 import { ThemeProvider } from "next-themes";
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -37,7 +38,9 @@ export default function RootLayout({
         >
           <SessionProvider>
             <ModalProvider>
-              {children}
+              <TooltipProvider delayDuration={0}>
+                {children}
+              </TooltipProvider>
             </ModalProvider>
           </SessionProvider>
         </ThemeProvider>
