@@ -120,10 +120,10 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900">
+        <div className="flex items-center justify-center min-h-screen p-4 bg-background">
             <Card className="w-full max-w-3xl">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Welcome to StockTrack!</CardTitle>
+                    <CardTitle className="text-2xl">Welcome to AfinadStockTrack!</CardTitle>
                     <CardDescription>
                         {step === 1
                             ? "Let's set up your portfolio goals. This will help us personalize your experience."
@@ -146,35 +146,33 @@ export default function OnboardingPage() {
                                             <Label
                                                 htmlFor={goal.id}
                                                 className={cn(
-                                                    "relative flex flex-col items-center justify-between rounded-md border-2 bg-popover p-4 cursor-pointer h-full transition-all duration-200",
-                                                    "hover:bg-accent/50 hover:border-accent",
+                                                    "flex flex-col items-center justify-between rounded-md border-2 bg-card p-4 cursor-pointer h-full transition-all",
+                                                    "hover:bg-accent hover:text-accent-foreground",
                                                     selectedGoal === goal.id ? [
                                                         "border-primary",
-                                                        "bg-primary/5",
+                                                        "bg-accent",
+                                                        "text-accent-foreground",
                                                         "ring-2",
-                                                        "ring-primary/10",
-                                                        "shadow-[0_0_15px_rgba(0,0,0,0.05)]"
+                                                        "ring-ring",
+                                                        "ring-offset-2"
                                                     ] : [
-                                                        "border-muted",
-                                                        "hover:border-muted"
+                                                        "border-border",
+                                                        "hover:border-accent"
                                                     ]
                                                 )}
                                             >
-                                                <div className={cn(
-                                                    "text-2xl mb-2 transform transition-all duration-200",
-                                                    selectedGoal === goal.id && "scale-110"
-                                                )}>
+                                                <div className="text-2xl mb-2">
                                                     {goal.icon}
                                                 </div>
                                                 <div className={cn(
                                                     "font-semibold",
-                                                    selectedGoal === goal.id && "text-primary"
+                                                    selectedGoal === goal.id && "text-accent-foreground"
                                                 )}>
                                                     {goal.title}
                                                 </div>
                                                 <div className={cn(
                                                     "text-sm text-muted-foreground text-center mt-1",
-                                                    selectedGoal === goal.id && "text-primary/80"
+                                                    selectedGoal === goal.id && "text-accent-foreground/90"
                                                 )}>
                                                     {goal.description}
                                                 </div>
@@ -208,7 +206,7 @@ export default function OnboardingPage() {
                                     onChange={(e) => setPortfolioName(e.target.value)}
                                 />
                             </div>
-                            <div className="bg-muted p-4 rounded-md">
+                            <div className="bg-card p-4 rounded-md border">
                                 <h3 className="font-medium mb-2">Your Selected Goal</h3>
                                 <div className="flex items-center space-x-3">
                                     <div className="text-2xl">{goalOptions.find((g) => g.id === selectedGoal)?.icon || "🎯"}</div>
@@ -224,7 +222,7 @@ export default function OnboardingPage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="bg-muted/50 p-4 rounded-md">
+                            <div className="bg-muted p-4 rounded-md border">
                                 <h3 className="font-medium mb-2">What&apos;s Next?</h3>
                                 <p className="text-sm text-muted-foreground">
                                     After completing this setup, you&apos;ll be taken to your dashboard where you can:
