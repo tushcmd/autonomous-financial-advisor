@@ -9,7 +9,7 @@ export default function Page() {
         <div className="flex-1 flex flex-col h-full">
             {/* Header */}
             <header className="h-14 border-b px-4 flex items-center justify-between">
-                <h1 className="text-sm font-medium">Voice conversation</h1>
+                <h1 className="text-sm font-medium">A conversation</h1>
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm">
                         Save conversation
