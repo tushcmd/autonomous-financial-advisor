@@ -202,6 +202,28 @@ class PuppeteerScraper {
   }
 
   /**
+   * Scrape multiple URLs and extract all <p> tag contents from each
+   * @param urls Array of URLs to scrape
+   * @returns Array of objects: { url, paragraphs: string[] }
+   */
+  async scrapeMultipleUrls(
+    urls: string[],
+  ): Promise<{ url: string; paragraphs: string[] }[]> {
+    const results: { url: string; paragraphs: string[] }[] = [];
+    for (const url of urls) {
+      try {
+        await this.goTo(url);
+        const paragraphs = await this.extractAllParagraphs();
+        results.push({ url, paragraphs });
+      } catch (error) {
+        console.error(`Failed to scrape ${url}:`, error);
+        results.push({ url, paragraphs: [] });
+      }
+    }
+    return results;
+  }
+
+  /**
    * Close the browser
    */
   async close(): Promise<void> {
