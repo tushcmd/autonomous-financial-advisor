@@ -1,8 +1,10 @@
-
-import { Mastra } from '@mastra/core';
-import { helloAgent } from './agents'
+import { Mastra } from "@mastra/core";
+import { portfolioAdvisorAgent } from "./agents";
+import { scrapeNewsTool, embedNewsTool, upsertPineconeTool } from "./tools";
+import { newsRagWorkflow } from "./workflows/newsRagWorkflow";
 
 export const mastra = new Mastra({
-    agents: [helloAgent],
-})
-        
+  agents: { portfolioAdvisorAgent },
+  tools: [scrapeNewsTool, embedNewsTool, upsertPineconeTool],
+  workflows: [newsRagWorkflow],
+});
