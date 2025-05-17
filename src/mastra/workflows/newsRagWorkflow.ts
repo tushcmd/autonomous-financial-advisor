@@ -1,8 +1,10 @@
 import { Workflow, Step } from "@mastra/core";
 import { z } from "zod";
-import { fetchYahooFinanceNewsTool } from "../tools/fetchYahooFinanceNews";
-import { scrapeNewsArticleContentsTool } from "../tools/scrapeNewsArticleContentsTool";
-import { upsertNewsEmbeddingsTool } from "../tools/upsertNewsEmbeddings";
+import {
+  fetchYahooFinanceNewsTool,
+  scrapeNewsArticleContentsTool,
+  upsertNewsEmbeddingsTool,
+} from "../tools";
 
 // Step 1: Fetch news
 const fetchNewsStep = new Step({
@@ -11,8 +13,13 @@ const fetchNewsStep = new Step({
     symbols: z.array(z.string()),
     maxNewsPerSymbol: z.number().default(5),
   }),
-  outputSchema: fetchYahooFinanceNewsTool.outputSchema,
+  outputSchema: fetchYahooFinanceNewsTool!.outputSchema,
   execute: async ({ context }) => {
+    if (!fetchYahooFinanceNewsTool || !fetchYahooFinanceNewsTool.execute) {
+      throw new Error(
+        "fetchYahooFinanceNewsTool is not defined or missing execute method",
+      );
+    }
     return await fetchYahooFinanceNewsTool.execute({
       context: context.inputData,
     });
@@ -22,9 +29,17 @@ const fetchNewsStep = new Step({
 // Step 2: Scrape articles
 const scrapeStep = new Step({
   id: "scrapeArticles",
-  inputSchema: fetchYahooFinanceNewsTool.outputSchema,
-  outputSchema: scrapeNewsArticleContentsTool.outputSchema,
+  inputSchema: fetchYahooFinanceNewsTool!.outputSchema,
+  outputSchema: scrapeNewsArticleContentsTool!.outputSchema,
   execute: async ({ context }) => {
+    if (
+      !scrapeNewsArticleContentsTool ||
+      !scrapeNewsArticleContentsTool.execute
+    ) {
+      throw new Error(
+        "scrapeNewsArticleContentsTool is not defined or missing execute method",
+      );
+    }
     const fetchResult = context.getStepResult("fetchNews");
     return await scrapeNewsArticleContentsTool.execute({
       context: fetchResult,
@@ -35,9 +50,14 @@ const scrapeStep = new Step({
 // Step 3: Upsert embeddings
 const upsertStep = new Step({
   id: "upsertEmbeddings",
-  inputSchema: scrapeNewsArticleContentsTool.outputSchema,
-  outputSchema: upsertNewsEmbeddingsTool.outputSchema,
+  inputSchema: scrapeNewsArticleContentsTool!.outputSchema,
+  outputSchema: upsertNewsEmbeddingsTool!.outputSchema,
   execute: async ({ context }) => {
+    if (!upsertNewsEmbeddingsTool || !upsertNewsEmbeddingsTool.execute) {
+      throw new Error(
+        "upsertNewsEmbeddingsTool is not defined or missing execute method",
+      );
+    }
     const scrapeResult = context.getStepResult("scrapeArticles");
     return await upsertNewsEmbeddingsTool.execute({ context: scrapeResult });
   },

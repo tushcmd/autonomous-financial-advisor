@@ -1,2 +1,2 @@
 export * from "./portfolioAdvisorAgent";
-// export * from "./dailyeEmailAgent";
+export * from "./dailyeEmailAgent";

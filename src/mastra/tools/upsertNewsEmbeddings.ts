@@ -29,7 +29,7 @@ export const upsertNewsEmbeddingsTool = createTool({
   }),
   execute: async ({ context: { results } }) => {
     // Flatten all paragraphs into chunks with metadata
-    let allChunks: { text: string; link: string; id: string }[] = [];
+    const allChunks: { text: string; link: string; id: string }[] = [];
     for (const article of results) {
       const doc = MDocument.fromText(article.paragraphs.join("\n"));
       const chunks = await doc.chunk({
@@ -38,10 +38,10 @@ export const upsertNewsEmbeddingsTool = createTool({
         overlap: 50,
       });
       allChunks.push(
-        ...chunks.map((chunk) => ({
+        ...chunks.map((chunk, idx) => ({
           text: chunk.text,
           link: article.link,
-          id: chunk.id,
+          id: `${article.link}::${idx}`,
         })),
       );
     }
