@@ -1,16 +1,22 @@
 'use client'
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { Header } from '@/components/layout/header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2, Search, DollarSign, TrendingUp } from 'lucide-react';
+import { PortfolioAdvice } from '@/components/get-advice';
 
 export default function Home() {
   const [ticker, setTicker] = useState('');
   const [data, setData] = useState<{ symbol?: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [advice, setAdvice] = useState<string | null>(null);
+
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
 
   const fetchStock = async () => {
     if (!ticker) return;
@@ -91,6 +97,27 @@ export default function Home() {
             </CardContent>
           </Card>
         )}
+
+        {/* Portfolio Advice Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>Personalized Portfolio Advice</CardTitle>
+            <CardDescription>Get AI-powered advice based on your portfolio and goals.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {userId ? (
+              <PortfolioAdvice userId={userId} onAdvice={setAdvice} />
+            ) : (
+              <div className="text-sm text-muted-foreground">Please sign in to get personalized advice.</div>
+            )}
+            {advice && (
+              <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                <strong>Advice:</strong>
+                <div className="whitespace-pre-line mt-2">{advice}</div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
