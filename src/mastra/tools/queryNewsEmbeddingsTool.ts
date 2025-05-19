@@ -6,7 +6,7 @@ import { groq } from "@ai-sdk/groq";
 
 export const queryNewsEmbeddingsTool = createVectorQueryTool({
   vectorStoreName: "pineconeStore",
-  indexName: "news-embeddings",
+  indexName: "stock-news-embeddings",
   model: cohere.embedding("embed-english-v3.0"),
   id: "Query News Embeddings",
   description: "Query Pinecone for similar news chunks using Cohere embedding.",
