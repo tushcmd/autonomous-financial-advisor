@@ -13,7 +13,7 @@ export const portfolioAdviseTool = createTool({
         shares: z.number(),
         avgPrice: z.number(),
         currentPrice: z.number(),
-      })
+      }),
     ),
     cashBalance: z.number(),
     goal: z.string(), // Now just a string, not an enum
@@ -25,7 +25,7 @@ export const portfolioAdviseTool = createTool({
         shares: z.number(),
         avgPrice: z.number(),
         currentPrice: z.number(),
-      })
+      }),
     ),
     cashBalance: z.number(),
     goal: z.string(), // Also just a string in output
@@ -33,11 +33,11 @@ export const portfolioAdviseTool = createTool({
       z.object({
         text: z.string(),
         link: z.string().url().optional(),
-      })
+      }),
     ),
   }),
   async execute(args) {
-    const { context, runtimeContext } = args;
+    const { context } = args;
 
     // Example: Use the first holding's symbol as the news query
     let newsResults = { results: [] as { text?: string; link?: string }[] };
@@ -50,7 +50,8 @@ export const portfolioAdviseTool = createTool({
           query: context.holdings[0].symbol,
           topK: 5,
         },
-        runtimeContext,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        runtimeContext: (args as any).runtimeContext,
       });
     }
 
@@ -62,7 +63,7 @@ export const portfolioAdviseTool = createTool({
     return {
       holdings: context.holdings,
       cashBalance: context.cashBalance,
-      goal: context.goal, 
+      goal: context.goal,
       news,
     };
   },
