@@ -180,7 +180,8 @@ class PuppeteerScraper {
     }
     await this.page.waitForNavigation({
       waitUntil: "networkidle2",
-      timeout: 60000,
+      // timeout: 60000,
+      timeout: 120000,
     }); // 60s timeout
   }
 
