@@ -70,7 +70,7 @@ Based on the above, analyze the portfolio's risk, suggest a risk-adjusted return
 `;
 
     // 3. Call Groq LLM
-    const llm = groq("llama3-groq-70b-8192-tool-use-preview");
+    const llm = groq("llama-3.3-70b-versatile");
     // @ts-expect-error: .complete may not be typed but is available at runtime
     const llmResponse = await llm.complete({
       prompt,

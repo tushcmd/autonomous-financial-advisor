@@ -7,7 +7,7 @@ import { MDocument } from "@mastra/rag";
 
 // --- VECTOR STORE CONFIG ---
 const pineconeApiKey = process.env.PINECONE_API_KEY!;
-const pineconeIndexName = "news-embeddings";
+const pineconeIndexName = "stock-news-embeddings";
 const pineconeDimension = 1024; // Cohere v3.0 is 1024 dims
 
 const pineconeStore = new PineconeVector(pineconeApiKey);
