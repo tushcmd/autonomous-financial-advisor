@@ -5,6 +5,8 @@ import { TopNav } from "@/components/dashboard/top-nav"
 
 import { SettingsProvider } from "@/contexts/settings-context"
 import type React from "react"
+import { Toaster } from "sonner"
+
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -34,6 +36,7 @@ export default function RootLayout({
                         </div>
                     </div>
                 </SettingsProvider>
+                <Toaster />
             </body>
         </html>
     )
