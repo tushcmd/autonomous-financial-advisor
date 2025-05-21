@@ -13,6 +13,6 @@ export const dailyEmailAgent = new Agent({
     Summarize the main stocks discussed and their projected directions (rising, falling, stable) in clear, concise language suitable for a daily stock advice email.
     Your output should be a single, well-structured summary ready to be sent as an email.
   `,
-  model: groq("llama3-groq-70b-8192-tool-use-preview"),
+  model: groq("llama-3.3-70b-versatile"),
   tools: { fetchYahooFinanceNewsTool, scrapeNewsArticleContentsTool },
 });

@@ -19,6 +19,6 @@ export const portfolioAdvisorAgent = new Agent({
     "- Consider market conditions from news\n" +
     "- Always relate advice back to the user's goals\n\n" +
     "Use the portfolioAdviseTool to generate comprehensive advice.",
-  model: groq("llama3-groq-70b-8192-tool-use-preview"),
+  model: groq("llama-3.3-70b-versatile"),
   tools: { portfolioAdviseTool },
 });
