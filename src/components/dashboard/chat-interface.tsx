@@ -64,8 +64,8 @@ export default function ChatInterface() {
     ])
 
     return (
-        <div className="flex-1 flex flex-col">
-            <ScrollArea className="flex-1 p-4">
+        <div className="flex-1 flex flex-col h-full relative">
+            <ScrollArea className="flex-1 p-4 h-[calc(100vh-180px)]">
                 <div className="space-y-4">
                     {messages.map((message, index) => (
                         <div
@@ -111,7 +111,7 @@ export default function ChatInterface() {
                     ))}
                 </div>
             </ScrollArea>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t bg-background sticky bottom-0">
                 <div className="flex gap-2">
                     <Textarea
                         placeholder="Type a message as a customer"

@@ -53,6 +53,7 @@ export function Sidebar() {
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const NavItem = ({ item, isBottom = false }: { item: NavigationItem; isBottom?: boolean }) => (
     <Tooltip delayDuration={0}>
       <TooltipTrigger asChild>
@@ -90,7 +91,7 @@ export function Sidebar() {
         </button>
         <div
           className={cn(
-            "fixed inset-y-0 z-20 flex flex-col bg-background transition-all duration-300 ease-in-out lg:static",
+            "fixed inset-y-0 z-20 flex flex-col bg-background shadow-lg",
             isCollapsed ? "w-[72px]" : "w-72",
             isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           )}
@@ -113,8 +114,8 @@ export function Sidebar() {
               </Button>
             </div>
           </div>
-          <div className="flex-1 overflow-auto">
-            <nav className="flex-1 space-y-1 px-2 py-4">
+          <div className="flex-1">
+            <nav className="space-y-1 px-2 py-4">
               {navigation.map((item) => (
                 <NavItem key={item.name} item={item} />
               ))}

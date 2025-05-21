@@ -10,11 +10,10 @@ import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
-// export const metadata = {
-//     title: "Flowers&Saints Dashboard",
-//     description: "A modern, responsive financial dashboard",
-//     generator: 'v0.dev'
-// }
+export const metadata = {
+    title: "Financial Advisor Dashboard",
+    description: "Everything to make you a profitable investor",
+}
 
 export default function RootLayout({
     children,
