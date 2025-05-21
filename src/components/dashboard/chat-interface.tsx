@@ -30,6 +30,36 @@ export default function ChatInterface() {
             role: "agent",
             content: "Please hold for a second.\n\nOk, I can help you with that\n\nI'm pulling up your current bill information\n\nYour current bill is $150, and it is due on August 31, 2024.\n\nIf you need more details, feel free to ask!",
             timestamp: "4:08:37 PM"
+        },
+        {
+            role: "user",
+            content: "Can you tell me more about the charges?",
+            timestamp: "4:09:00 PM"
+        },
+        {
+            role: "agent",
+            content: "Here's a detailed breakdown of your $150 bill:\n\n1. Basic Service Fee: $50\n- Account maintenance\n- Customer support\n- Platform access\n\n2. Usage Charges: $85\n- Transaction fees\n- Premium features\n- API calls\n\n3. Additional Fees: $15\n- Taxes\n- Processing fees\n\nWould you like me to explain any specific item in more detail?",
+            timestamp: "4:09:15 PM"
+        },
+        {
+            role: "user",
+            content: "What are the premium features included?",
+            timestamp: "4:09:45 PM"
+        },
+        {
+            role: "agent",
+            content: "The premium features in your plan include:\n\n• Advanced Analytics Dashboard\n• Real-time Market Data\n• Automated Portfolio Rebalancing\n• Priority Customer Support\n• Custom API Integration\n• Enhanced Security Features\n\nYou've utilized all these features this month, which is reflected in your usage charges. Would you like to know how much each feature costs individually?",
+            timestamp: "4:10:00 PM"
+        },
+        {
+            role: "user",
+            content: "Yes, please break down the costs for each premium feature.",
+            timestamp: "4:10:30 PM"
+        },
+        {
+            role: "agent",
+            content: "Here's the cost breakdown for each premium feature:\n\n1. Advanced Analytics Dashboard: $25\n2. Real-time Market Data: $20\n3. Automated Portfolio Rebalancing: $15\n4. Priority Customer Support: $10\n5. Custom API Integration: $10\n6. Enhanced Security Features: $5\n\nTotal Premium Features Cost: $85\n\nNote: These costs are based on your current usage level. You can optimize costs by adjusting usage of specific features if needed.",
+            timestamp: "4:10:45 PM"
         }
     ])
 
