@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Home,
   BarChart2,
@@ -15,206 +15,87 @@ import {
   MessagesSquare,
   Settings,
   HelpCircle,
-  ChevronLeft,
   Menu,
 } from "lucide-react"
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string
-}
+const navigation = [
+  { name: "Dashboard", href: "/dashboard", icon: Home },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart2 },
+  { name: "Notes", href: "/dashboard/notes", icon: Folder },
+  { name: "Transactions", href: "/dashboard/transactions", icon: Wallet },
+  { name: "Members", href: "/dashboard/members", icon: Users2 },
+  { name: "Permissions", href: "/dashboard/permissions", icon: Shield },
+  { name: "Chat", href: "/dashboard/chat", icon: MessagesSquare },
+]
+
+const bottomNavigation = [
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Help", href: "/dashboard/help", icon: HelpCircle },
+]
+
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname()
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
+
+  const SidebarContent = () => (
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex h-14 items-center border-b px-3 font-semibold">
+        <Link href="/">Flowers&Saints</Link>
+      </div>
+      <div className="flex-1 overflow-auto">
+        <nav className="grid gap-1 px-2">
+          {navigation.map((item) => (
+            <Button
+              key={item.href}
+              asChild
+              variant={pathname === item.href ? "secondary" : "ghost"}
+              className="justify-start"
+            >
+              <Link href={item.href}>
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.name}
+              </Link>
+            </Button>
+          ))}
+        </nav>
+      </div>
+      <div className="mt-auto border-t">
+        <nav className="grid gap-1 px-2 py-2">
+          {bottomNavigation.map((item) => (
+            <Button
+              key={item.href}
+              asChild
+              variant={pathname === item.href ? "secondary" : "ghost"}
+              className="justify-start"
+            >
+              <Link href={item.href}>
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.name}
+              </Link>
+            </Button>
+          ))}
+        </nav>
+      </div>
+    </div>
+  )
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {isMobileOpen && (
-        <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsMobileOpen(false)}
-        />
-      )}
-
-      {/* Mobile Toggle Button */}
-      <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-background rounded-md shadow-md"
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-      >
-        <Menu className="h-6 w-6" />
-      </button>
-
-      <div
-        className={cn(
-          "fixed top-0 bottom-0 left-0 z-40 flex flex-col bg-background transition-all duration-300 shadow-lg",
-          isCollapsed ? "w-[72px]" : "w-[240px]",
-          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          className
-        )}
-      >
-        {/* Header with collapse button */}
-        <div className="h-14 border-b flex items-center justify-between px-4">
-          {!isCollapsed && (
-            <Link href="/" className="font-semibold">
-              Flowers&Saints
-            </Link>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 lg:flex hidden"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-          >
-            <ChevronLeft
-              className={cn(
-                "h-4 w-4 transition-transform",
-                isCollapsed && "rotate-180"
-              )}
-            />
+      <Sheet>
+        <SheetTrigger asChild className="lg:hidden">
+          <Button variant="ghost" size="sm" className="px-2 ml-2">
+            <Menu className="h-6 w-6" />
           </Button>
-        </div>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0 w-72">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
 
-        {/* Navigation sections */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="space-y-4 py-4">
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                Overview
-              </h2>
-              <div className="space-y-1">
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard" ? "secondary" : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard">
-                    <Home className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard/analytics"
-                      ? "secondary"
-                      : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/analytics">
-                    <BarChart2 className="mr-2 h-4 w-4" />
-                    Analytics
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                Management
-              </h2>
-              <div className="space-y-1">
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard/notes" ? "secondary" : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/notes">
-                    <Folder className="mr-2 h-4 w-4" />
-                    Notes
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard/transactions"
-                      ? "secondary"
-                      : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/transactions">
-                    <Wallet className="mr-2 h-4 w-4" />
-                    Transactions
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard/members" ? "secondary" : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/members">
-                    <Users2 className="mr-2 h-4 w-4" />
-                    Members
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard/permissions"
-                      ? "secondary"
-                      : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/permissions">
-                    <Shield className="mr-2 h-4 w-4" />
-                    Permissions
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant={pathname === "/dashboard/chat" ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/chat">
-                    <MessagesSquare className="mr-2 h-4 w-4" />
-                    Chat
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                Settings
-              </h2>
-              <div className="space-y-1">
-                <Button
-                  asChild
-                  variant={
-                    pathname === "/dashboard/settings"
-                      ? "secondary"
-                      : "ghost"
-                  }
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/settings">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant={pathname === "/dashboard/help" ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                >
-                  <Link href="/dashboard/help">
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    Help
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <aside className={cn("pb-12 hidden lg:block w-72", className)}>
+        <SidebarContent />
+      </aside>
     </>
   )
 }

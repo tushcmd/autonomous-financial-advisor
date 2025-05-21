@@ -23,17 +23,13 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className={inter.className}>
                 <SettingsProvider>
-                    <div className="relative min-h-screen lg:flex">
-                        {/* Sidebar */}
-                        <div className="fixed inset-y-0 z-50">
-                            <Sidebar />
-                        </div>
-                        {/* Content */}
-                        <div className="flex-1 w-full lg:pl-[240px]">
+                    <div className="flex min-h-screen">
+                        <Sidebar className="border-r" />
+                        <div className="flex-1">
                             <TopNav />
-                            <div className="container mx-auto p-6 max-w-7xl">
-                                <main className="w-full">{children}</main>
-                            </div>
+                            <main className="p-8">
+                                {children}
+                            </main>
                         </div>
                     </div>
                 </SettingsProvider>
