@@ -3,7 +3,7 @@ import { ThemeToggle } from "./theme-toggle"
 import { Notifications } from "./notifications"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Menu, Settings, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
@@ -13,10 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-// import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import React from "react"
 import { UserAvatar } from "@/components/layout/user-avatar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sidebar } from "./sidebar"
 
 export function TopNav() {
   const pathname = usePathname()
@@ -27,7 +28,17 @@ export function TopNav() {
   return (
     <div className="sticky top-0 z-40 border-b bg-background">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-        <div className="hidden md:block">
+        <div className="flex items-center gap-4">
+          <Sheet>
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="sm" className="px-2">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-72">
+              <Sidebar className="block lg:hidden border-none" />
+            </SheetContent>
+          </Sheet>
           <nav className="flex items-center space-x-2">
             <Link href="/" className="text-sm font-medium">
               Home

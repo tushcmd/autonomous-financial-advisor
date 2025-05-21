@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Home,
   BarChart2,
@@ -15,7 +14,7 @@ import {
   MessagesSquare,
   Settings,
   HelpCircle,
-  Menu,
+  // Menu,
 } from "lucide-react"
 
 const navigation = [
@@ -33,18 +32,19 @@ const bottomNavigation = [
   { name: "Help", href: "/dashboard/help", icon: HelpCircle },
 ]
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname()
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col gap-4">
-      <div className="flex h-14 items-center border-b px-3 font-semibold">
-        <Link href="/">Flowers&Saints</Link>
+    <div className="flex h-full flex-col">
+      <div className="flex h-14 items-center border-b px-3 font-semibold shrink-0">
+        <Link href="/">AFINAD</Link>
       </div>
-      <div className="flex-1 overflow-auto">
-        <nav className="grid gap-1 px-2">
+      <div className="flex-1 overflow-y-auto">
+        <nav className="grid gap-1 px-2 py-4">
           {navigation.map((item) => (
             <Button
               key={item.href}
@@ -60,7 +60,7 @@ export function Sidebar({ className }: SidebarProps) {
           ))}
         </nav>
       </div>
-      <div className="mt-auto border-t">
+      <div className="border-t shrink-0">
         <nav className="grid gap-1 px-2 py-2">
           {bottomNavigation.map((item) => (
             <Button
@@ -81,21 +81,8 @@ export function Sidebar({ className }: SidebarProps) {
   )
 
   return (
-    <>
-      <Sheet>
-        <SheetTrigger asChild className="lg:hidden">
-          <Button variant="ghost" size="sm" className="px-2 ml-2">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-72">
-          <SidebarContent />
-        </SheetContent>
-      </Sheet>
-
-      <aside className={cn("pb-12 hidden lg:block w-72", className)}>
-        <SidebarContent />
-      </aside>
-    </>
+    <aside className={cn("hidden lg:block fixed inset-y-0 left-0 z-20 w-72 border-r", className)}>
+      <SidebarContent />
+    </aside>
   )
 }

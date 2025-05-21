@@ -23,12 +23,14 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className={inter.className}>
                 <SettingsProvider>
-                    <div className="flex min-h-screen">
-                        <Sidebar className="border-r" />
-                        <div className="flex-1">
+                    <div className="flex h-screen overflow-hidden bg-muted/5">
+                        <Sidebar />
+                        <div className="flex-1 flex flex-col lg:pl-72">
                             <TopNav />
-                            <main className="p-8">
-                                {children}
+                            <main className="flex-1 overflow-y-auto">
+                                <div className="container py-6 px-4">
+                                    {children}
+                                </div>
                             </main>
                         </div>
                     </div>
