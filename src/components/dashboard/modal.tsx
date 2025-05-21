@@ -21,7 +21,7 @@ export function Modal({ trigger, title, description }: ModalProps) {
             <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-500">
-                <X className="h-6 w-6" />
+                <X className="size-6" />
               </button>
             </div>
             <div className="p-6">
