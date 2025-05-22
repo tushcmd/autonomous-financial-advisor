@@ -19,17 +19,17 @@ import {
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart2 },
-  { name: "Notes", href: "/dashboard/notes", icon: Folder },
-  { name: "Transactions", href: "/dashboard/transactions", icon: Wallet },
-  { name: "Members", href: "/dashboard/members", icon: Users2 },
-  { name: "Permissions", href: "/dashboard/permissions", icon: Shield },
-  { name: "Chat", href: "/dashboard/chat", icon: MessagesSquare },
+  { name: "Analytics", href: "/analytics", icon: BarChart2 },
+  { name: "Notes", href: "/notes", icon: Folder },
+  { name: "Transactions", href: "/transactions", icon: Wallet },
+  { name: "Members", href: "/members", icon: Users2 },
+  { name: "Permissions", href: "/permissions", icon: Shield },
+  { name: "Chat", href: "/chat", icon: MessagesSquare },
 ]
 
 const bottomNavigation = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Help", href: "/dashboard/help", icon: HelpCircle },
+  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Help", href: "/help", icon: HelpCircle },
 ]
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
