@@ -1,4 +1,6 @@
-// dailyNewsWorkflow.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/lib/dailyWorkflow.ts
+
 import { newsRagWorkflow } from "../mastra/workflows/newsRagWorkflow";
 import { dailyEmailAgent } from "../mastra/agents";
 import { getDemoStockSymbols } from "../mastra/tools/fetchYahooFinanceNews";
@@ -30,7 +32,7 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
 
     // 1. Run the RAG workflow
     console.log(`Starting RAG workflow for ${symbols.length} stock symbols...`);
-    const workflowResult = await newsRagWorkflow.invoke({
+    const workflowResult = await newsRagWorkflow.run({
       input: {
         symbols,
         maxNewsPerSymbol,
@@ -40,6 +42,7 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
     });
 
     // 2. Extract the scraped articles from the workflow result
+    // The workflow result should have a 'scrapeArticles' step with 'results'
     const scrapedArticles =
       workflowResult?.steps?.scrapeArticles?.results ||
       workflowResult?.scrapeArticles?.results ||
@@ -55,13 +58,18 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
     );
 
     // 3. Generate the daily summary using the agent
+    // The dailyEmailAgent expects { articles } as input
     const summaryResult = await dailyEmailAgent.invoke({
       input: {
         articles: scrapedArticles,
       },
     });
 
-    const emailBody = summaryResult?.output || summaryResult;
+    // The agent's output may be under 'output' or directly as a string
+    const emailBody =
+      typeof summaryResult === "string"
+        ? summaryResult
+        : summaryResult?.output || summaryResult;
     const emailSubject = "Your Daily Stock Market Summary";
 
     // 4. Send email based on options
@@ -93,8 +101,7 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
         emailId: result.id,
       };
     } else {
-      // Default behavior: Get user from session or send to admin
-      // This could be modified based on your NextAuth implementation
+      // Default: Send to admin user
       const adminUser = await prisma.user.findFirst({
         where: { role: "ADMIN" },
       });
@@ -136,6 +143,7 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
 export async function executeDailyNewsWorkflow(options: WorkflowOptions = {}) {
   try {
     // Log the execution for auditing purposes
+    // --- FIX: Use correct model name (should match your Prisma schema) ---
     await prisma.workflowExecution.create({
       data: {
         workflowType: "DAILY_NEWS",
@@ -151,7 +159,6 @@ export async function executeDailyNewsWorkflow(options: WorkflowOptions = {}) {
       where: {
         workflowType: "DAILY_NEWS",
         status: "STARTED",
-        // Get the most recent one
         createdAt: {
           gte: new Date(Date.now() - 60000), // Within the last minute
         },
