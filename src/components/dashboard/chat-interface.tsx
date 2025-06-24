@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -32,6 +32,14 @@ export default function ChatInterface({
         },
     ]);
     const [loading, setLoading] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // Scroll to bottom when messages change
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     const handleSend = async () => {
         if (!input.trim() || loading) return;
@@ -76,20 +84,25 @@ export default function ChatInterface({
     return (
         <div className="flex-1 flex flex-col h-full relative">
             <ScrollArea className="flex-1 p-4 h-[calc(100vh-180px)]">
-                <div className="space-y-4">
+                <div className="flex flex-col space-y-4" ref={scrollRef}>
                     {messages.map((message, index) => (
                         <div
                             key={index}
                             className={cn(
                                 "flex gap-2 max-w-[80%]",
-                                message.role === "user" && "ml-auto"
+                                message.role === "user"
+                                    ? "self-end text-right"
+                                    : "self-start"
                             )}
                         >
                             {message.role === "agent" && (
                                 <div className="h-8 w-8 rounded-full bg-primary flex-shrink-0" />
                             )}
                             <div className="space-y-2">
-                                <div className="flex items-center gap-2">
+                                <div className={cn(
+                                    "flex items-center gap-2",
+                                    message.role === "user" ? "justify-end flex-row-reverse" : ""
+                                )}>
                                     <span className="text-sm font-medium">
                                         {message.role === "agent" ? "GenerativeAgent" : "G5"}
                                     </span>
@@ -97,7 +110,10 @@ export default function ChatInterface({
                                         {message.timestamp}
                                     </span>
                                 </div>
-                                <div className="p-3 bg-muted/50 rounded-lg">
+                                <div className={cn(
+                                    "p-3 bg-muted/50 rounded-lg",
+                                    message.role === "user" ? "bg-primary/10" : ""
+                                )}>
                                     <p className="text-sm whitespace-pre-wrap">
                                         {message.content}
                                     </p>

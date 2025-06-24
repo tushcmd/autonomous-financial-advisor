@@ -8,61 +8,73 @@ export async function chatWithPortfolioAgent(
   userMessage: string,
   portfolioType: "DEMO" | "REAL",
 ) {
-  // Fetch user's portfolio based on type
-  const portfolio = await prisma.portfolio.findFirst({
-    where: {
-      userId,
-      type: portfolioType,
-    },
-    select: {
-      id: true,
-      name: true,
-      type: true,
-      cashBalance: true,
-      portfolioGoal: true,
-      longTermGoal: true,
-      fakeTrades:
-        portfolioType === "DEMO"
-          ? {
-              select: {
-                symbol: true,
-                shares: true,
-                buyPrice: true,
-                currentPrice: true,
-                status: true,
-              },
-            }
-          : undefined,
-      realHoldings:
-        portfolioType === "REAL"
-          ? {
-              select: {
-                symbol: true,
-                shares: true,
-                avgPrice: true,
-                currentPrice: true,
-              },
-            }
-          : undefined,
-    },
-  });
+  // Simple intent detection (replace with NLP if needed)
+  const adviceKeywords = [
+    "analyze",
+    "advice",
+    "recommend",
+    "rebalance",
+    "what should I do",
+    "review",
+    "suggest",
+  ];
+  const needsAdvice = adviceKeywords.some((kw) =>
+    userMessage.toLowerCase().includes(kw),
+  );
 
-  if (!portfolio) throw new Error(`${portfolioType} portfolio not found`);
+  let prompt: string;
 
-  // Format holdings for the agent
-  const holdings =
-    (portfolioType === "DEMO"
-      ? portfolio.fakeTrades
-      : portfolio.realHoldings
-    )?.map((h: any) => ({
-      symbol: h.symbol,
-      shares: h.shares,
-      avgPrice: "buyPrice" in h ? h.buyPrice : h.avgPrice,
-      currentPrice: h.currentPrice,
-    })) || [];
+  if (needsAdvice) {
+    // Fetch portfolio as before
+    const portfolio = await prisma.portfolio.findFirst({
+      where: { userId, type: portfolioType },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        cashBalance: true,
+        portfolioGoal: true,
+        longTermGoal: true,
+        fakeTrades:
+          portfolioType === "DEMO"
+            ? {
+                select: {
+                  symbol: true,
+                  shares: true,
+                  buyPrice: true,
+                  currentPrice: true,
+                  status: true,
+                },
+              }
+            : undefined,
+        realHoldings:
+          portfolioType === "REAL"
+            ? {
+                select: {
+                  symbol: true,
+                  shares: true,
+                  avgPrice: true,
+                  currentPrice: true,
+                },
+              }
+            : undefined,
+      },
+    });
 
-  // Compose a prompt string for the agent
-  const prompt = `
+    if (!portfolio) throw new Error(`${portfolioType} portfolio not found`);
+
+    const holdings =
+      (portfolioType === "DEMO"
+        ? portfolio.fakeTrades
+        : portfolio.realHoldings
+      )?.map((h: any) => ({
+        symbol: h.symbol,
+        shares: h.shares,
+        avgPrice: "buyPrice" in h ? h.buyPrice : h.avgPrice,
+        currentPrice: h.currentPrice,
+      })) || [];
+
+    prompt = `
 You are an AI financial advisor. Here is the user's ${portfolioType.toLowerCase()} portfolio:
 Portfolio name: ${portfolio.name}
 Cash balance: $${portfolio.cashBalance}
@@ -70,12 +82,18 @@ Portfolio goal: ${portfolio.portfolioGoal || portfolio.longTermGoal || "Not spec
 Holdings: ${JSON.stringify(holdings, null, 2)}
 User message: ${userMessage}
 Please provide a helpful, personalized response.
-  `.trim();
+    `.trim();
+  } else {
+    // General chat prompt
+    prompt = `
+You are a helpful AI financial advisor. Engage in friendly, conversational chat. Only provide portfolio analysis if the user asks for it.
+User message: ${userMessage}
+    `.trim();
+  }
 
   const agent = mastra.getAgent("portfolioAdvisorAgent");
   const result = await agent.generate(prompt);
 
-  // Return string result or fallback
   return typeof result === "string"
     ? result
     : result && typeof result.text === "string"
