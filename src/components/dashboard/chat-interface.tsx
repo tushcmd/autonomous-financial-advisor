@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Copy, Download, ThumbsUp, ThumbsDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { chatWithPortfolioAgent } from "@/actions/mastra-chat";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
     role: "agent" | "user";
@@ -48,7 +49,8 @@ export default function ChatInterface({
             content: input,
             timestamp: new Date().toLocaleTimeString(),
         };
-        setMessages((msgs) => [...msgs, userMessage]);
+        const updatedMessages = [...messages, userMessage];
+        setMessages(updatedMessages);
         setInput("");
         setLoading(true);
 
@@ -56,7 +58,8 @@ export default function ChatInterface({
             const agentReply = await chatWithPortfolioAgent(
                 userId,
                 userMessage.content,
-                portfolioType
+                portfolioType,
+                updatedMessages // Pass the conversation history
             );
             setMessages((msgs) => [
                 ...msgs,
@@ -114,9 +117,17 @@ export default function ChatInterface({
                                     "p-3 bg-muted/50 rounded-lg",
                                     message.role === "user" ? "bg-primary/10" : ""
                                 )}>
-                                    <p className="text-sm whitespace-pre-wrap">
-                                        {message.content}
-                                    </p>
+                                    {message.role === "agent" ? (
+                                        <div className="text-sm whitespace-pre-wrap">
+                                            <ReactMarkdown>
+                                                {message.content}
+                                            </ReactMarkdown>
+                                        </div>
+                                    ) : (
+                                        <p className="text-sm whitespace-pre-wrap">
+                                            {message.content}
+                                        </p>
+                                    )}
                                 </div>
                                 {message.role === "agent" && (
                                     <div className="flex items-center gap-2">
