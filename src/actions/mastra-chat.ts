@@ -7,6 +7,7 @@ export async function chatWithPortfolioAgent(
   userId: string,
   userMessage: string,
   portfolioType: "DEMO" | "REAL",
+  history?: { role: string; content: string }[],
 ) {
   // Simple intent detection (replace with NLP if needed)
   const adviceKeywords = [
@@ -74,12 +75,27 @@ export async function chatWithPortfolioAgent(
         currentPrice: h.currentPrice,
       })) || [];
 
+    // Format chat history for context
+    const formattedHistory = history
+      ? history
+          .map(
+            (msg) =>
+              `${msg.role === "user" ? "User" : "Agent"}: ${msg.content}`,
+          )
+          .join("\n")
+      : "";
+
+    // Compose a prompt string for the agent
     prompt = `
 You are an AI financial advisor. Here is the user's ${portfolioType.toLowerCase()} portfolio:
 Portfolio name: ${portfolio.name}
 Cash balance: $${portfolio.cashBalance}
 Portfolio goal: ${portfolio.portfolioGoal || portfolio.longTermGoal || "Not specified"}
 Holdings: ${JSON.stringify(holdings, null, 2)}
+
+Conversation history:
+${formattedHistory}
+
 User message: ${userMessage}
 Please provide a helpful, personalized response.
     `.trim();
