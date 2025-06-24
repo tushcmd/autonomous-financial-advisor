@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Resend } from "resend";
 import { PrismaClient, User } from "@prisma/client";
 
