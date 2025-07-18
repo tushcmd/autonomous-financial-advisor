@@ -54,8 +54,16 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
     }
 
     console.log(
-      `Found ${scrapedArticles.length} articles. Generating summary...`,
+      `Found ${scrapedArticles.length} articles. Processing results...`,
     );
+
+    // Log detailed information about each article
+    scrapedArticles.forEach((article, index) => {
+      console.log(`\nArticle ${index + 1}/${scrapedArticles.length}:`);
+      console.log(`URL: ${article.link}`);
+      console.log(`Paragraphs: ${article.paragraphs?.length || 0}`);
+      console.log(`First paragraph: ${article.paragraphs?.[0]?.substring(0, 100)}...`);
+    });
 
     // 3. Generate the daily summary using the agent
     // Convert the articles into a message format for the agent
@@ -138,14 +146,15 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
 export async function executeDailyNewsWorkflow(options: WorkflowOptions = {}) {
   try {
     // Log the execution for auditing purposes
-    // --- FIX: Use correct model name (should match your Prisma schema) ---
-    await prisma.workflowExecution.create({
+    console.log("Starting workflow execution tracking...");
+    const workflowExecution = await prisma.workflowExecution.create({
       data: {
         workflowType: "DAILY_NEWS",
         status: "STARTED",
         metadata: JSON.stringify(options),
       },
     });
+    console.log(`Created workflow execution record: ${workflowExecution.id}`);
 
     const result = await runDailyRagAndEmail(options);
 
