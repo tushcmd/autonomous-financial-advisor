@@ -58,18 +58,13 @@ async function runDailyRagAndEmail(options: WorkflowOptions = {}) {
     );
 
     // 3. Generate the daily summary using the agent
-    // The dailyEmailAgent expects { articles } as input
-    const summaryResult = await dailyEmailAgent.invoke({
-      input: {
-        articles: scrapedArticles,
-      },
-    });
+    // Convert the articles into a message format for the agent
+    const prompt = `Please summarize these articles:\n${JSON.stringify(scrapedArticles)}`;
+    const summaryResult = await dailyEmailAgent.generate(prompt);
 
-    // The agent's output may be under 'output' or directly as a string
+    // Get the text from the generation result
     const emailBody =
-      typeof summaryResult === "string"
-        ? summaryResult
-        : summaryResult?.output || summaryResult;
+      typeof summaryResult === "string" ? summaryResult : summaryResult.text;
     const emailSubject = "Your Daily Stock Market Summary";
 
     // 4. Send email based on options
