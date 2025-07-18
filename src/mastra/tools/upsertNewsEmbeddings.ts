@@ -1,16 +1,16 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import { embedMany } from "ai";
-import { cohere } from "@ai-sdk/cohere";
+import { openai } from "@ai-sdk/openai";
 import { PineconeVector } from "@mastra/pinecone";
 import { MDocument } from "@mastra/rag";
 
 // --- VECTOR STORE CONFIG ---
 const pineconeApiKey = process.env.PINECONE_API_KEY!;
 const pineconeIndexName = "stock-news-embeddings";
-const pineconeDimension = 1024; // Cohere v3.0 is 1024 dims
+const pineconeDimension = 1536; // OpenAI ada-002 embedding dimension
 
-const pineconeStore = new PineconeVector(pineconeApiKey);
+const pineconeStore = new PineconeVector({ apiKey: pineconeApiKey });
 
 // --- TOOL: UPSERT SCRAPED NEWS EMBEDDINGS ---
 export const upsertNewsEmbeddingsTool = createTool({
@@ -46,10 +46,10 @@ export const upsertNewsEmbeddingsTool = createTool({
       );
     }
 
-    // Embed all chunks with Cohere
+    // Embed all chunks with OpenAI
     const { embeddings } = await embedMany({
       values: allChunks.map((chunk) => chunk.text),
-      model: cohere.embedding("embed-english-v3.0"),
+      model: openai.embedding("text-embedding-ada-002"),
     });
 
     // Ensure index exists
