@@ -104,7 +104,7 @@ export default function ChatInterface({
                             <div className="space-y-2">
                                 <div className={cn(
                                     "flex items-center gap-2",
-                                    message.role === "user" ? "justify-end flex-row-reverse" : ""
+                                    message.role === "user" ? "flex-row-reverse" : ""
                                 )}>
                                     <span className="text-sm font-medium">
                                         {message.role === "agent" ? "GenerativeAgent" : "G5"}

@@ -107,12 +107,20 @@ User message: ${userMessage}
     `.trim();
   }
 
-  const agent = mastra.getAgent("portfolioAdvisorAgent");
-  const result = await agent.generate(prompt);
+  try {
+    const agent = mastra.getAgent("portfolioAdvisorAgent");
+    const result = await agent.generate(prompt);
 
-  return typeof result === "string"
-    ? result
-    : result && typeof result.text === "string"
-      ? result.text
-      : "No response from agent.";
+    if (!result) {
+      throw new Error("Agent returned no response");
+    }
+
+    return typeof result === "string"
+      ? result
+      : result.text ?? "No response from agent.";
+  } catch (error) {
+    console.error("Portfolio agent error:", error);
+    throw new Error("Failed to generate portfolio advice. Please try again later.");
+  }
+}
 }

@@ -1,16 +1,19 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import { embedMany } from "ai";
-import { openai } from "@ai-sdk/openai";
 import { PineconeVector } from "@mastra/pinecone";
 import { MDocument } from "@mastra/rag";
+import { openai } from "@ai-sdk/openai";
 
 // --- VECTOR STORE CONFIG ---
 const pineconeApiKey = process.env.PINECONE_API_KEY!;
 const pineconeIndexName = "stock-news-embeddings";
-const pineconeDimension = 1536; // OpenAI ada-002 embedding dimension
+const pineconeDimension = 1024; // OpenAI text-embedding-3-small dimension
 
-const pineconeStore = new PineconeVector({ apiKey: pineconeApiKey });
+const pineconeStore = new PineconeVector({
+  apiKey: pineconeApiKey,
+  environment: "aped-4627-b74a",
+});
 
 // --- TOOL: UPSERT SCRAPED NEWS EMBEDDINGS ---
 export const upsertNewsEmbeddingsTool = createTool({
@@ -46,10 +49,10 @@ export const upsertNewsEmbeddingsTool = createTool({
       );
     }
 
-    // Embed all chunks with OpenAI
+    // Embed all chunks with OpenAI's text-embedding-3-small (1024D)
     const { embeddings } = await embedMany({
       values: allChunks.map((chunk) => chunk.text),
-      model: openai.embedding("text-embedding-ada-002"),
+      model: openai.embedding("text-embedding-3-small"),
     });
 
     // Ensure index exists
