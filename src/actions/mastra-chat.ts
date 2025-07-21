@@ -117,10 +117,11 @@ User message: ${userMessage}
 
     return typeof result === "string"
       ? result
-      : result.text ?? "No response from agent.";
+      : (result.text ?? "No response from agent.");
   } catch (error) {
     console.error("Portfolio agent error:", error);
-    throw new Error("Failed to generate portfolio advice. Please try again later.");
+    throw new Error(
+      "Failed to generate portfolio advice. Please try again later.",
+    );
   }
-}
 }
